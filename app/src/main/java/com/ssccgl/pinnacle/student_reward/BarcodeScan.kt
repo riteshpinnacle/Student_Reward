@@ -1,3 +1,4 @@
+
 package com.ssccgl.pinnacle.student_reward
 
 import android.annotation.SuppressLint
@@ -26,8 +27,6 @@ class BarcodeScan : AppCompatActivity() {
     private lateinit var barcodeDetector: BarcodeDetector
     private lateinit var cameraSource: CameraSource
     private var isCameraStarted = false
-    private var lastScannedBarcode: String? = null
-    private var barcodeAdded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,52 +90,6 @@ class BarcodeScan : AppCompatActivity() {
                 showToast("Barcode scanner has been stopped")
             }
 
-
-
-//            override fun receiveDetections(detections: Detector.Detections<Barcode>) {
-//                val barcodes = detections.detectedItems
-//                for (i in 0 until barcodes.size()) {
-//                    val scannedBarcode = barcodes.valueAt(i).displayValue
-//                    if (scannedBarcode != viewModel.scannedBarcode) {
-//
-//                        barcodeAdded = true
-//                        lastScannedBarcode = scannedBarcode
-//
-////                        val intent = Intent(this@BarcodeScan, OtpAuth::class.java)
-////                        startActivity(intent)
-//
-//                        binding.txtDetectedItems.text = scannedBarcode
-//                        binding.txtDetectedItems.visibility = View.VISIBLE
-//
-//
-//                        val scannedBarcode = scannedBarcode
-//                        intent.putExtra(scannedBarcode, scannedBarcode)
-//                        startActivity(intent)
-//
-//                        vibrate()
-//                    }
-//                }
-//            }
-
-//            override fun receiveDetections(detections: Detector.Detections<Barcode>) {
-//                val barcodes = detections.detectedItems
-//                for (i in 0 until barcodes.size()) {
-//                    val scannedBarcode = barcodes.valueAt(i).displayValue
-//                    if (scannedBarcode != viewModel.scannedBarcode) {
-//                        viewModel.scannedBarcode = scannedBarcode
-//
-//                        val intent = Intent(this@BarcodeScan, OtpAuth::class.java)
-//                        startActivity(intent)
-//
-//                        runOnUiThread {
-//                            binding.txtDetectedItems.text = scannedBarcode
-//                            binding.txtDetectedItems.visibility = View.VISIBLE
-//                        }
-//                        vibrate()
-//                    }
-//                }
-//            }
-
             override fun receiveDetections(detections: Detector.Detections<Barcode>) {
                 val barcodes = detections.detectedItems
                 for (i in 0 until barcodes.size()) {
@@ -144,9 +97,13 @@ class BarcodeScan : AppCompatActivity() {
                     if (scannedBarcode != viewModel.scannedBarcode) {
                         viewModel.scannedBarcode = scannedBarcode
 
+                        // Start OtpAuth activity here
                         val intent = Intent(this@BarcodeScan, OtpAuth::class.java)
                         intent.putExtra("scannedBarcode", scannedBarcode)
                         startActivity(intent)
+
+                        // Do not start OtpAuth directly from here, as it's not needed
+                        // You only need to store the scanned barcode in the ViewModel
 
                         runOnUiThread {
                             binding.txtDetectedItems.text = scannedBarcode
@@ -156,7 +113,6 @@ class BarcodeScan : AppCompatActivity() {
                     }
                 }
             }
-
         })
     }
 
@@ -177,9 +133,6 @@ class BarcodeScan : AppCompatActivity() {
         }
     }
 
-
-
-
     override fun onResume() {
         super.onResume()
         if (!isCameraStarted) {
@@ -192,5 +145,4 @@ class BarcodeScan : AppCompatActivity() {
         cameraSource.stop()
         isCameraStarted = false
     }
-
 }
